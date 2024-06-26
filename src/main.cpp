@@ -61,8 +61,8 @@ void setup() {
 void loop() {
     if (ts.tirqTouched() && ts.touched()) {
         TS_Point p = ts.getPoint();
-        int16_t touchX = map(p.x, 0, 4095, 0, tft.width());
-        int16_t touchY = map(p.y, 0, 4095, 0, tft.height());
+        const long touchX = map(p.x, 0, 4095, 0, tft.width());
+        const long touchY = map(p.y, 0, 4095, 0, tft.height());
         
         screen_manager.current.handleTouch(touchX, touchY);
         delay(50);

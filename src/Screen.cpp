@@ -5,9 +5,11 @@
 #include "Screen.h"
 #include <TFT_eSPI.h>
 
+#include <utility>
+
 extern TFT_eSPI tft;
 
-Screen::Screen(std::string name) : widgetCount(0), name(name) {}
+Screen::Screen(std::string name) : name(std::move(name)),  widgetCount(0) {}
 
 void Screen::addWidget(Widget* widget) {
     if (widgetCount < maxWidgets) {
@@ -22,7 +24,7 @@ void Screen::draw() const {
     }
 }
 
-void Screen::handleTouch(int touchX, int touchY) const {
+void Screen::handleTouch(const int touchX, const int touchY) const {
     for (int i = 0; i < widgetCount; i++) {
         if (widgets[i]->contains(touchX, touchY)) {
             widgets[i]->onTouch();

@@ -10,7 +10,7 @@
 class Screen {
 public:
     std::string name;
-    static const int maxWidgets = 10;
+    static constexpr int maxWidgets = 10;
     Widget* widgets[maxWidgets]{};
     int widgetCount;
 

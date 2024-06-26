@@ -9,7 +9,7 @@
 
 extern TFT_eSPI tft;
 
-bool Widget::contains(int touchX, int touchY) {
+bool Widget::contains(const int touchX, const int touchY) {
     return (touchX >= x && touchX <= x + width && touchY >= y && touchY <= y + height);
 }
 
@@ -21,7 +21,7 @@ void Widget::onRelease() {
     // Default implementation, can be overridden in subclasses
 }
 
-Label::Label(int x, int y, int textSize, String text) {
+Label::Label(const int x, const int y, const int textSize, const String& text) {
     this->x = x;
     this->y = y;
     this->width = tft.textWidth(text);
@@ -36,7 +36,7 @@ void Label::draw() {
     tft.drawString(text, x, y);
 }
 
-Button::Button(int x, int y, int width, int height, int textSize, String label, void (*onClick)()) : pressed(false) {
+Button::Button(const int x, const int y, const int width, const int height, const int textSize, String label, void (*onClick)()) : pressed(false) {
     this->x = x;
     this->y = y;
     this->width = width;
@@ -48,8 +48,8 @@ Button::Button(int x, int y, int width, int height, int textSize, String label, 
 
 void Button::draw() {
     tft.drawRect(x, y, width, height, TFT_WHITE);
-    int16_t textX = x + (width - tft.textWidth(label, textSize)) / 2;
-    int16_t textY = y + (height - tft.fontHeight(textSize)) / 2;
+    const int16_t textX = x + (width - tft.textWidth(label, textSize)) / 2;
+    const int16_t textY = y + (height - tft.fontHeight(textSize)) / 2;
     tft.setTextSize(textSize);
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
     tft.drawString(label, textX, textY);

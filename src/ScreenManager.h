@@ -11,8 +11,9 @@ public:
     Screen current;
 
     ScreenManager();
+    virtual ~ScreenManager() = default;
 
-    virtual void switchTo(Screen other);
+    virtual void switchTo(Screen& other);
 };
 
 #endif //SCREENMANAGER_H

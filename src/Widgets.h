@@ -11,7 +11,11 @@
 class Widget {
 public:
     int x, y, width, height;
+
+    virtual ~Widget()() = default;
+
     virtual void draw() = 0;
+
     virtual bool contains(int touchX, int touchY);
     virtual void onTouch();
     virtual void onRelease();
@@ -21,7 +25,8 @@ class Label : public Widget {
 public:
     String text;
     int textSize;
-    Label(int x, int y, int textSize, String text);
+
+    Label(int x, int y, int textSize, const String& text);
 
     void draw() override;
 };
@@ -32,6 +37,7 @@ public:
     int textSize;
     bool pressed;
     void (*onClick)();
+
     Button(int x, int y, int width, int height, int textSize, String label, void (*onClick)());
 
     void draw() override;
