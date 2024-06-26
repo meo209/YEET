@@ -9,11 +9,12 @@
 
 class Screen {
 public:
+    std::string name;
     static const int maxWidgets = 10;
     Widget* widgets[maxWidgets]{};
     int widgetCount;
 
-    Screen();
+    explicit Screen(std::string name);
 
     void addWidget(Widget* widget);
 

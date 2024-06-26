@@ -7,7 +7,7 @@
 
 extern TFT_eSPI tft;
 
-Screen::Screen() : widgetCount(0) {}
+Screen::Screen(std::string name) : widgetCount(0), name(name) {}
 
 void Screen::addWidget(Widget* widget) {
     if (widgetCount < maxWidgets) {

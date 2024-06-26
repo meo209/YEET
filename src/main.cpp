@@ -7,6 +7,7 @@
 #include <XPT2046_Touchscreen.h>
 #include <TFT_eSPI.h>
 #include "Screen.h"
+#include "ScreenManager.h"
 #include "Widgets.h"
 
 #define XPT2046_IRQ 36
@@ -19,10 +20,10 @@ SPIClass mySpi = SPIClass(VSPI);
 XPT2046_Touchscreen ts(XPT2046_CS, XPT2046_IRQ);
 TFT_eSPI tft = TFT_eSPI();
 
-Screen mainScreen;
+Screen homeScreen("Home");
+Screen settingScreen("Settings");
 
-Screen homeScreen;
-Screen settingScreen;
+ScreenManager screen_manager;
 
 void setup() {
     Serial.begin(115200);
@@ -40,9 +41,7 @@ void setup() {
 
     Label* h_label = new Label(10, 10, 2, "YEET.");
     Button* h_button = new Button(10, 50, 100, 35, 2, "Settings", []{
-        mainScreen = settingScreen;
-        mainScreen.draw();
-        Serial.println("Swtiched to settings.");
+        screen_manager.switchTo(settingScreen);
     });
 
     homeScreen.addWidget(h_label);
@@ -50,18 +49,13 @@ void setup() {
 
     Label* s_label = new Label(10, 10, 2, "Settings");
     Button* s_button = new Button(10, 50, 100, 35, 2, "Back", [] {
-        mainScreen = homeScreen;
-        mainScreen.draw();
-        Serial.println("Swtiched to home.");
+        screen_manager.switchTo(homeScreen);
     });
 
     settingScreen.addWidget(s_label);
     settingScreen.addWidget(s_button);
 
-    mainScreen = homeScreen;
-
-    // Draw the screen
-    mainScreen.draw();
+    screen_manager.switchTo(homeScreen);
 }
 
 void loop() {
@@ -70,9 +64,9 @@ void loop() {
         int16_t touchX = map(p.x, 0, 4095, 0, tft.width());
         int16_t touchY = map(p.y, 0, 4095, 0, tft.height());
         
-        mainScreen.handleTouch(touchX, touchY);
+        screen_manager.current.handleTouch(touchX, touchY);
         delay(50);
     } else {
-        mainScreen.handleNonTouch();
+        screen_manager.current.handleNonTouch();
     }
 }
