@@ -7,34 +7,44 @@
 
 #include <utility>
 
+#include "ScreenManager.h"
+#include "screen/HomeScreen.h"
+
 extern TFT_eSPI tft;
+extern ScreenManager screen_manager;
 
-Screen::Screen(std::string name) : name(std::move(name)),  widgetCount(0) {}
+Screen::Screen(std::string name) : name(std::move(name)) {}
 
-void Screen::addWidget(Widget* widget) {
-    if (widgetCount < maxWidgets) {
-        widgets[widgetCount++] = widget;
-    }
+Widget* Screen::addWidget(Widget* widget) {
+    widgets.push_back(widget);
+    return widget;
+}
+
+void Screen::defaultWidgets() {
+    Label* main_label = new Label(10, 10, 2, name.c_str());
+
+    Button* back_button = new Button(tft.width() - 10 - 75, 10, 75, 37, 2, "Home", []{
+        screen_manager.switchTo(HomeScreen());
+    });
+
+    addWidget(main_label);
+    addWidget(back_button);
 }
 
 void Screen::draw() const {
     tft.fillScreen(TFT_BLACK);
-    for (int i = 0; i < widgetCount; i++) {
-        widgets[i]->draw();
-    }
+    for (Widget* widget : widgets)
+        widget->draw();
 }
 
 void Screen::handleTouch(const int touchX, const int touchY) const {
-    for (int i = 0; i < widgetCount; i++) {
-        if (widgets[i]->contains(touchX, touchY)) {
-            widgets[i]->onTouch();
-            break;
-        }
+    for (Widget* widget : widgets) {
+        if (widget->contains(touchX, touchY))
+            widget->onTouch();
     }
 }
 
 void Screen::handleNonTouch() const {
-    for (int i = 0; i < widgetCount; i++) {
-        widgets[i]->onRelease();
-    }
+    for (Widget* widget : widgets)
+        widget->onRelease();
 }

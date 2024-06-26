@@ -5,18 +5,19 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
+#include <vector>
+
 #include "Widgets.h"
 
 class Screen {
 public:
     std::string name;
-    static constexpr int maxWidgets = 10;
-    Widget* widgets[maxWidgets]{};
-    int widgetCount;
+    std::vector<Widget*> widgets;
 
     explicit Screen(std::string name);
 
-    void addWidget(Widget* widget);
+    Widget* addWidget(Widget* widget);
+    void defaultWidgets();
 
     void draw() const;
 

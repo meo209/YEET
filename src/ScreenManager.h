@@ -13,7 +13,7 @@ public:
     ScreenManager();
     virtual ~ScreenManager() = default;
 
-    virtual void switchTo(Screen& other);
+    virtual void switchTo(const Screen& other);
 };
 
 #endif //SCREENMANAGER_H
