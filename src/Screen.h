@@ -19,7 +19,7 @@ public:
     Widget* addWidget(Widget* widget);
     void defaultWidgets();
 
-    void draw() const;
+    void update();
 
     void handleTouch(int touchX, int touchY) const;
     void handleNonTouch() const;

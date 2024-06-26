@@ -11,5 +11,4 @@ void ScreenManager::switchTo(const Screen& other) {
     Serial.println();
 
     current = other;
-    current.draw();
 }

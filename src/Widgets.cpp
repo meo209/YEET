@@ -43,7 +43,7 @@ Button::Button(const int x, const int y, const int width, const int height, cons
     this->height = height;
     this->label = std::move(label);
     this->textSize = textSize;
-    this->onClick = std::move(onClick);
+    this->onClick = onClick;
 }
 
 void Button::draw() {

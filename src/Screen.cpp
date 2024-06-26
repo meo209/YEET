@@ -31,20 +31,27 @@ void Screen::defaultWidgets() {
     addWidget(back_button);
 }
 
-void Screen::draw() const {
+void Screen::update() {
     tft.fillScreen(TFT_BLACK);
-    for (Widget* widget : widgets)
-        widget->draw();
+    for (Widget* widget : widgets) {
+        if (widget->enabled == true) {
+            widget->draw();
+        }
+    }
 }
 
 void Screen::handleTouch(const int touchX, const int touchY) const {
     for (Widget* widget : widgets) {
-        if (widget->contains(touchX, touchY))
+        if (widget->enabled == true && widget->contains(touchX, touchY)) {
             widget->onTouch();
+        }
     }
 }
 
 void Screen::handleNonTouch() const {
-    for (Widget* widget : widgets)
-        widget->onRelease();
+    for (Widget* widget : widgets) {
+        if (widget->enabled == true) {
+            widget->onRelease();
+        }
+    }
 }

@@ -11,6 +11,7 @@
 class Widget {
 public:
     int x, y, width, height;
+    bool enabled;
 
     virtual void draw() = 0;
 

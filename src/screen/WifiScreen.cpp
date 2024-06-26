@@ -8,6 +8,7 @@
 #include "src/modules/WiFiModule.h"
 
 extern TFT_eSPI tft;
+extern ScreenManager screen_manager;
 
 WifiScreen::WifiScreen() : Screen("Wifi") {
     Button* scan_button = new Button(10, 50, tft.width() - 20, 37, 2, "Scan", []{
@@ -17,8 +18,19 @@ WifiScreen::WifiScreen() : Screen("Wifi") {
             Serial.println();
         }
     });
+    
+    Label* text_label = new Label(10, 100, 2, "Hello Text");
+    text_label->enabled = false;
+
+    Button* trigger_label_button = new Button(10, 150, tft.width() - 20, 37, 2, "Trigger Label",[&, this] {
+        text_label->enabled = true;
+    });
 
     defaultWidgets();
+    
+    update();
 
+    addWidget(trigger_label_button);
+    addWidget(text_label);
     addWidget(scan_button);
 }

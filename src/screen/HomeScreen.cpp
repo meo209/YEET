@@ -14,9 +14,11 @@ HomeScreen::HomeScreen() : Screen("Home") {
     Label* main_label = new Label(10, 10, 2, "YEET - v0.0.1");
 
     Button* wifi_button = new Button(10, 50, tft.width() - 20, 37, 2, "Wifi", [] {
-        screen_manager.switchTo(WifiScreen());
+        screen_manager.switchTo(*new WifiScreen());
     });
 
     addWidget(main_label);
     addWidget(wifi_button);
+
+    update();
 }
