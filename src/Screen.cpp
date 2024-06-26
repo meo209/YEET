@@ -43,7 +43,7 @@ void Screen::update() {
 void Screen::handleTouch(const int touchX, const int touchY) const {
     for (Widget* widget : widgets) {
         if (widget->enabled == true && widget->contains(touchX, touchY)) {
-            widget->onTouch();
+            widget->onTouch(touchX, touchY);
         }
     }
 }

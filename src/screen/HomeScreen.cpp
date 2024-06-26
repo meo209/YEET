@@ -4,6 +4,8 @@
 
 #include "HomeScreen.h"
 
+#include <TFT_eSPI.h>
+
 #include "WifiScreen.h"
 #include "src/ScreenManager.h"
 
