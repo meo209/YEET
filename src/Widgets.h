@@ -12,8 +12,6 @@ class Widget {
 public:
     int x, y, width, height;
 
-    virtual ~Widget()() = default;
-
     virtual void draw() = 0;
 
     virtual bool contains(int touchX, int touchY);
@@ -34,11 +32,11 @@ public:
 class Button : public Widget {
 public:
     String label;
-    int textSize;
+    uint8_t textSize;
     bool pressed;
-    void (*onClick)();
+    std::function<void()> onClick;
 
-    Button(int x, int y, int width, int height, int textSize, String label, void (*onClick)());
+    Button(int x, int y, int width, int height, uint8_t textSize, String label, std::function<void()> onClick);
 
     void draw() override;
 

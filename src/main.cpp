@@ -6,9 +6,11 @@
 #include <SPI.h>
 #include <XPT2046_Touchscreen.h>
 #include <TFT_eSPI.h>
+
 #include "Screen.h"
 #include "ScreenManager.h"
 #include "Widgets.h"
+#include "modules/WiFiModule.h"
 
 #define XPT2046_IRQ 36
 #define XPT2046_MOSI 32
@@ -20,18 +22,81 @@ SPIClass mySpi = SPIClass(VSPI);
 XPT2046_Touchscreen ts(XPT2046_CS, XPT2046_IRQ);
 TFT_eSPI tft = TFT_eSPI();
 
-Screen homeScreen("Home");
-Screen settingScreen("Settings");
+Screen home_screen("Home");
+Screen wifi_screen("WIFI");
+Screen settings_screen("Settings");
 
 ScreenManager screen_manager;
+
+void addLabel(Screen& screen, int x, int y, int fontSize, const char* text) {
+    Label* label = new Label(x, y, fontSize, text);
+    screen.addWidget(label);
+}
+
+void setupHomeScreen() {
+    Label* main_label = new Label(10, 10, 2, "YEET - v0.0.1");
+
+    Button* wifi_button = new Button(10, 50, tft.width() - 20, 37, 2, "WIFI", []{
+        screen_manager.switchTo(wifi_screen);
+    });
+
+    Button* settings_button = new Button(10, 50 + 37 + 5, tft.width() - 20, 37, 2, "Settings", []{
+        screen_manager.switchTo(settings_screen);
+    });
+
+    home_screen.addWidget(main_label);
+    home_screen.addWidget(wifi_button);
+    home_screen.addWidget(settings_button);
+}
+
+void defualtWidgets(Screen& screen) {
+    Label* main_label = new Label(10, 10, 2, screen.name.c_str());
+
+    Button* back_button = new Button(tft.width() - 10 - 75, 10, 75, 37, 2, "Home", []{
+        screen_manager.switchTo(home_screen);
+    });
+
+    screen.addWidget(main_label);
+    screen.addWidget(back_button);
+}
+
+void wifiScanTask(void *parameter) {
+    Serial.println("Scanning for wifi's...");
+    for (const String& ssid : WifiModule::scanWifis()) {
+        Serial.printf("%s", ssid.c_str());
+        Serial.println();
+    }
+    vTaskDelete(nullptr); // Delete the task when done
+}
+
+void setupWIFIScreen() {
+    defualtWidgets(wifi_screen);
+
+    Button* scan_button = new Button(10, 50, tft.width() - 20, 37, 2, "Scan", []{
+        xTaskCreate(
+            wifiScanTask,       // Task function
+            "WiFi Scan Task",   // Name of the task (for debugging)
+            2048,               // Stack size (bytes)
+            nullptr,               // Parameter to pass to the task
+            1,                  // Task priority
+            nullptr                // Task handle (not needed)
+        );
+    });
+
+    wifi_screen.addWidget(scan_button);
+}
+
+void setupSettingsScreen() {
+    defualtWidgets(settings_screen);
+}
 
 void setup() {
     Serial.begin(115200);
 
     mySpi.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
     if (!ts.begin(mySpi)) {
-        Serial.println("Failed to initialize touchscreen!");
-        while (1);
+        Serial.println("Failed to initialize touchscreen.");
+        while (true);
     }
     ts.setRotation(0);  // Ensure the rotation matches the display
 
@@ -39,23 +104,11 @@ void setup() {
     tft.setRotation(0); // Ensure the rotation matches the touchscreen
     tft.fillScreen(TFT_BLACK);
 
-    Label* h_label = new Label(10, 10, 2, "YEET.");
-    Button* h_button = new Button(10, 50, 100, 35, 2, "Settings", []{
-        screen_manager.switchTo(settingScreen);
-    });
+    setupHomeScreen();
+    setupWIFIScreen();
+    setupSettingsScreen();
 
-    homeScreen.addWidget(h_label);
-    homeScreen.addWidget(h_button);
-
-    Label* s_label = new Label(10, 10, 2, "Settings");
-    Button* s_button = new Button(10, 50, 100, 35, 2, "Back", [] {
-        screen_manager.switchTo(homeScreen);
-    });
-
-    settingScreen.addWidget(s_label);
-    settingScreen.addWidget(s_button);
-
-    screen_manager.switchTo(homeScreen);
+    screen_manager.switchTo(home_screen);
 }
 
 void loop() {

@@ -36,7 +36,7 @@ void Label::draw() {
     tft.drawString(text, x, y);
 }
 
-Button::Button(const int x, const int y, const int width, const int height, const int textSize, String label, void (*onClick)()) : pressed(false) {
+Button::Button(const int x, const int y, const int width, const int height, const uint8_t textSize, String label, std::function<void()> onClick) : pressed(false) {
     this->x = x;
     this->y = y;
     this->width = width;
@@ -47,12 +47,12 @@ Button::Button(const int x, const int y, const int width, const int height, cons
 }
 
 void Button::draw() {
-    tft.drawRect(x, y, width, height, TFT_WHITE);
+    tft.drawRect(x, y, width, height, TFT_DARKGREY);
     const int16_t textX = x + (width - tft.textWidth(label, textSize)) / 2;
     const int16_t textY = y + (height - tft.fontHeight(textSize)) / 2;
     tft.setTextSize(textSize);
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    tft.drawString(label, textX, textY);
+    tft.drawString(label, textX, textY, 2);
 }
 
 void Button::onTouch() {
