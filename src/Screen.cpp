@@ -21,9 +21,9 @@ Widget* Screen::addWidget(Widget* widget) {
 }
 
 void Screen::defaultWidgets() {
-    Label* main_label = new Label(10, 10, 2, name.c_str());
+    auto* main_label = new Label(10, 10, 2, name.c_str());
 
-    Button* back_button = new Button(tft.width() - 10 - 75, 10, 75, 37, 2, "Home", []{
+    auto* back_button = new Button(tft.width() - 10 - 75, 10, 75, 37, 2, "Home", []{
         screen_manager.switchTo(HomeScreen());
     });
 
