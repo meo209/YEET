@@ -5,6 +5,8 @@
 #include "Widgets.h"
 #include <TFT_eSPI.h>
 
+#include <utility>
+
 extern TFT_eSPI tft;
 
 bool Widget::contains(int touchX, int touchY) {
@@ -39,7 +41,7 @@ Button::Button(int x, int y, int width, int height, int textSize, String label, 
     this->y = y;
     this->width = width;
     this->height = height;
-    this->label = label;
+    this->label = std::move(label);
     this->textSize = textSize;
     this->onClick = onClick;
 }
