@@ -78,18 +78,18 @@ List::List(Screen* parent, const int x, const int y, const int width, const int 
     this->textSize = textSize;
     this->content = content;
 
-    int yPosIndex = y - tft.fontHeight(2);
+    int yPosIndex = y;
     for (const String& string : content) {
-        Label* label = new Label(parent, x, y ,textSize, string);
-        parent->addWidget(label);
+        Label* label = new Label(parent, x, yPosIndex, textSize, string);
         labels.push_back(label);
         yPosIndex += tft.fontHeight(textSize);
     }
 }
 
 void List::draw() {
-    tft.fillRect(x, y, width, height, TFT_BLACK); // Clear the list area
-    tft.drawRect(x, y, width, height, TFT_DARKGREY);
+    for (Label* label : labels) {
+        label->draw();
+    }
 }
 
 void List::onTouch(int touch_x, int touch_y) {
