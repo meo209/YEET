@@ -21,7 +21,8 @@ void Widget::onRelease(const int touch_x, const int touch_y) {
     // Default implementation, can be overridden in subclasses
 }
 
-Label::Label(const int x, const int y, const int textSize, const String& text) : Widget() {
+Label::Label(Screen* parent, const int x, const int y, const int textSize, const String& text) : Widget() {
+    this->parent = parent;
     this->x = x;
     this->y = y;
     this->width = tft.textWidth(text);
@@ -36,7 +37,8 @@ void Label::draw() {
     tft.drawString(text, x, y);
 }
 
-Button::Button(const int x, const int y, const int width, const int height, const uint8_t textSize, String label, std::function<void()> onClick) : pressed(false) {
+Button::Button(Screen* parent, const int x, const int y, const int width, const int height, const uint8_t textSize, String label, std::function<void()> onClick) : pressed(false) {
+    this->parent = parent;
     this->x = x;
     this->y = y;
     this->width = width;
@@ -67,17 +69,20 @@ void Button::onRelease(int last_tocu, int touch_y) {
     }
 }
 
-List::List(const int x, const int y, const int width, const int height, const uint8_t textSize, std::vector<String> content) : content(std::move(content)) {
+List::List(Screen* parent, const int x, const int y, const int width, const int height, const uint8_t textSize, std::vector<String> content) {
+    this->parent = parent;
     this->x = x;
     this->y = y;
     this->width = width;
     this->height = height;
     this->textSize = textSize;
+    this->content = content;
 
     int yPosIndex = y - tft.fontHeight(2);
-    for (String string : content) {
-        Label* label = new Label(x, y ,textSize, string);
-        labels.push_back(parent->addWidget(label));
+    for (const String& string : content) {
+        Label* label = new Label(parent, x, y ,textSize, string);
+        parent->addWidget(label);
+        labels.push_back(label);
         yPosIndex += tft.fontHeight(textSize);
     }
 }

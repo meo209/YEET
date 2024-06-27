@@ -29,7 +29,7 @@ public:
     String text;
     int textSize;
 
-    Label(int x, int y, int textSize, const String& text);
+    Label(Screen* parent, int x, int y, int textSize, const String& text);
 
     void draw() override;
 };
@@ -41,7 +41,7 @@ public:
     bool pressed;
     std::function<void()> onClick;
 
-    Button(int x, int y, int width, int height, uint8_t textSize, String label, std::function<void()> onClick);
+    Button(Screen* parent, int x, int y, int width, int height, uint8_t textSize, String label, std::function<void()> onClick);
 
     void draw() override;
 
@@ -55,7 +55,7 @@ public:
     std::vector<Label*> labels;
     uint8_t textSize;
 
-    List(int x, int y, int width, int height, uint8_t textSize, std::vector<String> content);
+    List(Screen* parent, int x, int y, int width, int height, uint8_t textSize, std::vector<String> content);
 
     void draw() override;
 

@@ -18,17 +18,16 @@ Screen::Screen(std::string name) : name(std::move(name)), last_touch_x(0), last_
 
 }
 
-template <typename T>
-T* Screen::addWidget(T* widget) {
+Widget* Screen::addWidget(Widget* widget) {
     widget->parent = this;
-    widgets.push_back(static_cast<Widget*>(widget));
+    widgets.push_back(widget);
     return widget;
 }
 
 void Screen::defaultWidgets() {
-    auto* main_label = new Label(10, 10, 2, name.c_str());
+    auto* main_label = new Label(this, 10, 10, 2, name.c_str());
 
-    auto* back_button = new Button(tft.width() - 10 - 75, 10, 75, 37, 2, "Home", []{
+    auto* back_button = new Button(this, tft.width() - 10 - 75, 10, 75, 37, 2, "Home", []{
         screen_manager.switchTo(HomeScreen());
     });
 

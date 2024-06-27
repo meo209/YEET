@@ -22,8 +22,7 @@ public:
 
     explicit Screen(std::string name);
 
-    template <typename T>
-    T* addWidget(T* widget);
+    Widget* addWidget(Widget* widget);
     void defaultWidgets();
 
     void update();

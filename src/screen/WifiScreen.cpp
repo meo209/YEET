@@ -15,7 +15,7 @@ extern ScreenManager screen_manager;
 
 WifiScreen::WifiScreen() : Screen("Wifi") {
 
-    Button* scan_button = new Button(10, 50, tft.width() - 20, 37, 2, "Scan", []{
+    Button* scan_button = new Button(this, 10, 50, tft.width() - 20, 37, 2, "Scan", []{
         Serial.println("Scanning for wifi's...");
         for (const String& ssid : WifiModule::scanWifis()) {
             Serial.printf("%s", ssid.c_str());
@@ -23,10 +23,10 @@ WifiScreen::WifiScreen() : Screen("Wifi") {
         }
     });
 
-    Label* text_label = new Label(10, 100, 2, "Hello Text");
+    Label* text_label = new Label(this, 10, 100, 2, "Hello Text");
     text_label->enabled = false;
 
-    Button* trigger_label_button = new Button(10, 125, tft.width() - 20, 37, 2, "Trigger Label", [=] {
+    Button* trigger_label_button = new Button(this, 10, 125, tft.width() - 20, 37, 2, "Trigger Label", [=] {
         text_label->enabled = !text_label->enabled;
         update();
     });
@@ -43,7 +43,7 @@ WifiScreen::WifiScreen() : Screen("Wifi") {
     list_content.push_back("Hello Wolrd 08");
     list_content.push_back("Hello Wolrd 09");
 
-    List* test_list = new List(10, 180, 150, 150, 2, list_content);
+    List* test_list = new List(this, 10, 180, 150, 150, 2, list_content);
 
     defaultWidgets();
 
