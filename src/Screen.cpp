@@ -9,14 +9,19 @@
 
 #include "ScreenManager.h"
 #include "screen/HomeScreen.h"
+#include "Widgets.h"
 
 extern TFT_eSPI tft;
 extern ScreenManager screen_manager;
 
-Screen::Screen(std::string name) : name(std::move(name)) {}
+Screen::Screen(std::string name) : name(std::move(name)), last_touch_x(0), last_touch_y(0) {
 
-Widget* Screen::addWidget(Widget* widget) {
-    widgets.push_back(widget);
+}
+
+template <typename T>
+T* Screen::addWidget(T* widget) {
+    widget->parent = this;
+    widgets.push_back(static_cast<Widget*>(widget));
     return widget;
 }
 
@@ -40,10 +45,12 @@ void Screen::update() {
     }
 }
 
-void Screen::handleTouch(const int touchX, const int touchY) const {
+void Screen::handleTouch(const int touch_x, const int touch_y) {
+    last_touch_x = touch_x;
+    last_touch_y = touch_x;
     for (Widget* widget : widgets) {
-        if (widget->enabled == true && widget->contains(touchX, touchY)) {
-            widget->onTouch(touchX, touchY);
+        if (widget->enabled == true && widget->contains(touch_x, touch_y)) {
+            widget->onTouch(touch_x, touch_y);
         }
     }
 }
@@ -51,7 +58,7 @@ void Screen::handleTouch(const int touchX, const int touchY) const {
 void Screen::handleNonTouch() const {
     for (Widget* widget : widgets) {
         if (widget->enabled == true) {
-            widget->onRelease();
+            widget->onRelease(last_touch_x, last_touch_y);
         }
     }
 }

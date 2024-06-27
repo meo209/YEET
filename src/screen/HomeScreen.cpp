@@ -8,6 +8,7 @@
 
 #include "WifiScreen.h"
 #include "src/ScreenManager.h"
+#include "src/Widgets.h"
 
 extern TFT_eSPI tft;
 extern ScreenManager screen_manager;

@@ -4,6 +4,8 @@
 
 #include "ScreenManager.h"
 
+#include <HardwareSerial.h>
+
 ScreenManager::ScreenManager() : current(Screen("BOOT")) {}
 
 void ScreenManager::switchTo(const Screen& other) {

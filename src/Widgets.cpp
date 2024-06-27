@@ -9,19 +9,19 @@
 
 extern TFT_eSPI tft;
 
-bool Widget::contains(const int touchX, const int touchY) {
-    return (touchX >= x && touchX <= x + width && touchY >= y && touchY <= y + height);
+bool Widget::contains(const int touch_x, const int touch_y) {
+    return (touch_x >= x && touch_x <= x + width && touch_y >= y && touch_y <= y + height);
 }
 
-void Widget::onTouch(int touchX, int touchY) {
+void Widget::onTouch(const int touch_x, const int touch_y) {
     // Default implementation, can be overridden in subclasses
 }
 
-void Widget::onRelease() {
+void Widget::onRelease(const int touch_x, const int touch_y) {
     // Default implementation, can be overridden in subclasses
 }
 
-Label::Label(const int x, const int y, const int textSize, const String& text) {
+Label::Label(const int x, const int y, const int textSize, const String& text) : Widget() {
     this->x = x;
     this->y = y;
     this->width = tft.textWidth(text);
@@ -55,11 +55,11 @@ void Button::draw() {
     tft.drawString(label, textX, textY, 2);
 }
 
-void Button::onTouch(int touchX, int touchY) {
+void Button::onTouch(int touch_x, int touch_y) {
     pressed = true;
 }
 
-void Button::onRelease() {
+void Button::onRelease(int last_tocu, int touch_y) {
     if (pressed) {
         pressed = false;
 
@@ -67,51 +67,30 @@ void Button::onRelease() {
     }
 }
 
-List::List(const int x, const int y, const int width, const int height, const uint8_t textSize, std::vector<String> content) : content(std::move(content)), lastTouchY(0), isScrolling(false), scrollOffset(0) {
+List::List(const int x, const int y, const int width, const int height, const uint8_t textSize, std::vector<String> content) : content(std::move(content)) {
     this->x = x;
     this->y = y;
     this->width = width;
     this->height = height;
     this->textSize = textSize;
+
+    int yPosIndex = y - tft.fontHeight(2);
+    for (String string : content) {
+        Label* label = new Label(x, y ,textSize, string);
+        labels.push_back(parent->addWidget(label));
+        yPosIndex += tft.fontHeight(textSize);
+    }
 }
 
 void List::draw() {
     tft.fillRect(x, y, width, height, TFT_BLACK); // Clear the list area
     tft.drawRect(x, y, width, height, TFT_DARKGREY);
-
-    int yPosIndex = y - scrollOffset;
-    for (const String& ctn : content) {
-        if (yPosIndex > y + height) break; // Stop drawing if we go outside the list area
-
-        if (yPosIndex >= y) { // Only draw visible items
-            auto* label = new Label(x, yPosIndex, textSize, ctn);
-            label->draw();
-            delete label;
-        }
-        yPosIndex += tft.fontHeight(textSize);
-    }
 }
 
-void List::onTouch(int touchX, int touchY) {
-    if (contains(touchX, touchY)) {
-        if (!isScrolling) {
-            isScrolling = true;
-            lastTouchY = touchY;
-        } else {
-            int delta = touchY - lastTouchY;
-            lastTouchY = touchY;
+void List::onTouch(int touch_x, int touch_y) {
 
-            scrollOffset -= delta;
-            if (scrollOffset < 0) scrollOffset = 0;
-
-            int maxOffset = content.size() * tft.fontHeight(textSize) - height;
-            if (scrollOffset > maxOffset) scrollOffset = maxOffset;
-
-            draw(); // Redraw the list with new offset
-        }
-    }
 }
 
-void List::onRelease() {
-    isScrolling = false;
+void List::onRelease(int last_touch_x, int last_touch_y) {
+
 }

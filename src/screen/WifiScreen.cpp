@@ -7,6 +7,7 @@
 #include <TFT_eSPI.h>
 
 #include "src/ScreenManager.h"
+#include "src/Widgets.h"
 #include "src/modules/WiFiModule.h"
 
 extern TFT_eSPI tft;
