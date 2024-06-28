@@ -35,26 +35,39 @@ void Screen::defaultWidgets() {
     addWidget(back_button);
 }
 
-void Screen::draw() {
-    tft.fillScreen(TFT_BLACK);
+void Screen::update() {
     for (Widget* widget : widgets) {
         if (widget->enabled == true) {
-            widget->draw();
+            update(widget);
         }
     }
 }
 
-void Screen::update() {
+void Screen::update(Widget *widget) {
+    widget->update();
+}
+
+void Screen::draw() {
+    tft.fillScreen(TFT_BLACK);
     for (Widget* widget : widgets) {
         if (widget->enabled == true) {
-            widget->update();
+            draw(widget);
         }
     }
+}
+
+void Screen::draw(Widget *widget) {
+    widget->draw();
 }
 
 void Screen::updateAndDraw() {
     update();
     draw();
+}
+
+void Screen::updateAndDraw(Widget* widget) {
+    update(widget);
+    draw(widget);
 }
 
 void Screen::handleTouch(const int touch_x, const int touch_y) {

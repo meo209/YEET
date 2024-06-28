@@ -26,8 +26,11 @@ public:
     void defaultWidgets();
 
     void update();
+    void update(Widget* widget);
     void draw();
+    void draw(Widget* widget);
     void updateAndDraw();
+    void updateAndDraw(Widget* widget);
 
     void handleTouch(int touch_x, int touch_y);
     void handleNonTouch() const;

@@ -4,7 +4,6 @@
 
 #include "Widgets.h"
 #include <TFT_eSPI.h>
-#include "Config.h"
 
 extern TFT_eSPI tft;
 
@@ -75,16 +74,16 @@ void Label::draw() {
     int text_width = tft.textWidth(text, font);
 
     if (text_width > width) {
-        int ellipsis_width = tft.textWidth("...", font);
+        int ellipsis_width = tft.textWidth("..", font);
         int max_width = width - ellipsis_width;
-        int lenght = text.length();
+        int length = text.length();
 
-        while (text_width > max_width && lenght > 0) {
-            display_text = text.substring(0, --lenght);
+        while (text_width > max_width && length > 0) {
+            display_text = text.substring(0, --length);
             text_width = tft.textWidth(display_text, font);
         }
 
-        display_text += "...";
+        display_text += "..";
     }
 
     tft.fillRect(x, y, width, height, TFT_BLACK);
@@ -192,13 +191,18 @@ void List::onTouchSimple(const int touch_x, const int touch_y) {
         if (scroll_offset > max_offset)
             scroll_offset = max_offset;
 
-        int yPosIndex = y - scroll_offset;
+        int y_pos_index = y - scroll_offset;
+        bool position_changed = false; // Variable to minimize draw calls.
         for (Widget *child: children) {
-            child->y = yPosIndex;
-            yPosIndex += tft.fontHeight(font) / 2;
+            if (child->y != y_pos_index) {
+                child->y = y_pos_index;
+                position_changed = true;
+            }
+            y_pos_index += tft.fontHeight(font) / 2;
         }
 
-        draw();
+        if (position_changed)
+            draw();
     }
 }
 

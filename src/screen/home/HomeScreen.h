@@ -7,7 +7,6 @@
 
 #include "src/Screen.h"
 
-
 class HomeScreen : public Screen {
 public:
     HomeScreen();

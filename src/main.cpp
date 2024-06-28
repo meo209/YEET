@@ -28,6 +28,16 @@ ScreenManager screen_manager = ScreenManager();
 void setup() {
     Serial.begin(115200);
 
+    Serial.println();
+    Serial.println("---INFO---");
+    Serial.printf("MODEL: %s", ESP.getChipModel()); Serial.println();
+    Serial.printf("CORES: %d", ESP.getChipCores()); Serial.println();
+    Serial.printf("PSRAM SIZE: %d", ESP.getPsramSize()); Serial.println();
+    Serial.printf("HEAP SIZE: %d", ESP.getHeapSize()); Serial.println();
+    Serial.printf("FLASH SIZE: %d", ESP.getFlashChipSize()); Serial.println();
+    Serial.printf("SKETCH SIZE: %d", ESP.getSketchSize()); Serial.println();
+    Serial.println("---INFO---");
+
     mySpi.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
     if (!ts.begin(mySpi)) {
         Serial.println("Failed to initialize touchscreen.");
