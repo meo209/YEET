@@ -14,9 +14,9 @@ extern TFT_eSPI tft;
 extern ScreenManager screen_manager;
 
 HomeScreen::HomeScreen() : Screen("Home") {
-    Label* main_label = new Label(this, 10, 10, 2, "YEET - v0.0.1");
+    Label* main_label = new Label(this, 10, 10, 2, 2, false, "YEET - v0.0.1");
 
-    Button* wifi_button = new Button(this, 10, 50, tft.width() - 20, 37, 2, "Wifi", [] {
+    Button* wifi_button = new Button(this, 10, 50, tft.width() - 20, 37, 2, 1, "Wifi", [] {
         auto* screen = new WifiScreen();
         screen_manager.switchTo(*screen);
     });

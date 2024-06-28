@@ -14,12 +14,18 @@
 class Widget {
 public:
     Screen* parent;
+    std::vector<Widget*> children;
     int x, y, width, height;
     bool enabled = true;
 
     virtual void draw() = 0;
 
-    virtual bool contains(int touch_x, int touch_y);
+    virtual void drawChildren();
+
+    virtual bool contains(int x, int y);
+    virtual bool contains(int x, int y, int width, int height);
+    virtual bool contains(Widget* widget, int x, int y);
+    virtual bool contains(Widget* widget);
     virtual void onTouch(int touch_x, int touch_y);
     virtual void onRelease(int last_touch_x, int last_touch_y);
 };
@@ -27,21 +33,22 @@ public:
 class Label : public Widget {
 public:
     String text;
-    int textSize;
+    int text_size, font;
+    bool centered;
 
-    Label(Screen* parent, int x, int y, int textSize, const String& text);
+    Label(Screen* parent, int x, int y, int textSize, int font, const String& text);
+    Label(Screen* parent, int x, int y, int textSize, int font, bool centered, const String& text);
 
     void draw() override;
 };
 
 class Button : public Widget {
 public:
-    String label;
-    uint8_t textSize;
+    Label* label;
     bool pressed;
     std::function<void()> onClick;
 
-    Button(Screen* parent, int x, int y, int width, int height, uint8_t textSize, String label, std::function<void()> onClick);
+    Button(Screen* parent, int x, int y, int width, int height, uint8_t textSize, uint8_t font, String text, std::function<void()> onClick);
 
     void draw() override;
 
@@ -52,10 +59,9 @@ public:
 class List : public Widget {
 public:
     std::vector<String> content;
-    std::vector<Label*> labels;
     uint8_t textSize;
 
-    List(Screen* parent, int x, int y, int width, int height, uint8_t textSize, std::vector<String> content);
+    List(Screen* parent, int x, int y, int width, int height, uint8_t textSize, int font, std::vector<String> content);
 
     void draw() override;
 
