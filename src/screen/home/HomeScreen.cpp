@@ -6,7 +6,7 @@
 
 #include <TFT_eSPI.h>
 
-#include "WifiScreen.h"
+#include "src/screen/wifi/WifiScreen.h"
 #include "src/ScreenManager.h"
 #include "src/Widgets.h"
 

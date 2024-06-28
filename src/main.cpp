@@ -11,7 +11,7 @@
 #include "Screen.h"
 #include "ScreenManager.h"
 #include "modules/WiFiModule.h"
-#include "screen/HomeScreen.h"
+#include "screen/home/HomeScreen.h"
 
 #define XPT2046_IRQ 36
 #define XPT2046_MOSI 32

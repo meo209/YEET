@@ -8,8 +8,8 @@
 #include <utility>
 
 #include "ScreenManager.h"
-#include "screen/HomeScreen.h"
 #include "Widgets.h"
+#include "screen/home/HomeScreen.h"
 
 extern TFT_eSPI tft;
 extern ScreenManager screen_manager;
