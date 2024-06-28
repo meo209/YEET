@@ -26,6 +26,8 @@ public:
     void defaultWidgets();
 
     void update();
+    void draw();
+    void updateAndDraw();
 
     void handleTouch(int touch_x, int touch_y);
     void handleNonTouch() const;

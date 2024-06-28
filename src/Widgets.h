@@ -19,6 +19,7 @@ public:
     bool enabled = true;
 
     virtual void draw() = 0;
+    virtual void update();
 
     virtual void drawChildren();
 
@@ -27,6 +28,7 @@ public:
     virtual bool contains(Widget* widget, int x, int y);
     virtual bool contains(Widget* widget);
     virtual void onTouch(int touch_x, int touch_y);
+    virtual void onTouchSimple(int touch_x, int touch_y);
     virtual void onRelease(int last_touch_x, int last_touch_y);
 };
 
@@ -60,12 +62,17 @@ class List : public Widget {
 public:
     std::vector<String> content;
     uint8_t textSize;
+    int font;
+    int scroll_offset, last_touch_y;
+    bool is_scrolling;
 
     List(Screen* parent, int x, int y, int width, int height, uint8_t textSize, int font, std::vector<String> content);
 
+    void update() override;
     void draw() override;
 
     void onTouch(int touch_x, int touch_y) override;
+    void onTouchSimple(int touch_x, int touch_y) override;
     void onRelease(int last_touch_x, int last_touch_y) override;
 };
 

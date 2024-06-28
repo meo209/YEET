@@ -4,6 +4,7 @@
 
 #include "WifiScreen.h"
 
+#include <memory>
 #include <TFT_eSPI.h>
 
 #include "src/ScreenManager.h"
@@ -15,42 +16,35 @@ extern ScreenManager screen_manager;
 
 WifiScreen::WifiScreen() : Screen("Wifi") {
 
-    Button* scan_button = new Button(this, 10, 50, tft.width() - 20, 37, 2, 2, "Scan", []{
+    auto ssids = std::make_shared<std::vector<String>>();
+
+    Label* status_label = new Label(this, 10, tft.height() - 10, 1, 1, "Ready to scan.");
+    List* wifi_list = new List(this, 10, 100, tft.width() - 20, tft.height() - 115, 2, 2, *ssids);
+
+    Button* scan_button = new Button(this, 10, 50, tft.width() - 20, 37, 2, 2, "Scan", [this, status_label, ssids, wifi_list] {
         Serial.println("Scanning for wifi's...");
-        for (const String& ssid : WifiModule::scanWifis()) {
-            Serial.printf("%s", ssid.c_str());
-            Serial.println();
+        status_label->text = "Scanning...";
+        status_label->draw();
+        auto scanned_ssids = WifiModule::scanWifis();
+
+        ssids->clear();
+
+        for (const auto& ssid : scanned_ssids) {
+            if (ssid.length() > 0) {  // Check if SSID is not empty
+                ssids->push_back(ssid);
+            }
         }
+
+        wifi_list->content = *ssids;
+        status_label->text = "Finished.";
+        updateAndDraw();
     });
-
-    Label* text_label = new Label(this, 10, 100, 2, 2, "Hello Text");
-    text_label->enabled = false;
-
-    Button* trigger_label_button = new Button(this, 10, 125, tft.width() - 20, 37, 2, 2, "Trigger Label", [=] {
-        text_label->enabled = !text_label->enabled;
-        update();
-    });
-
-    std::vector<String> list_content;
-    list_content.push_back("Hello Wolrd 01");
-    list_content.push_back("Hello Wolrd 02");
-    list_content.push_back("Hello Wolrd 03");
-    list_content.push_back("Hello Wolrd 03");
-    list_content.push_back("Hello Wolrd 04");
-    list_content.push_back("Hello Wolrd 05");
-    list_content.push_back("Hello Wolrd 06");
-    list_content.push_back("Hello Wolrd 07");
-    list_content.push_back("Hello Wolrd 08");
-    list_content.push_back("Hello Wolrd 09");
-
-    List* test_list = new List(this, 10, 180, 150, 150, 2, 2, list_content);
 
     defaultWidgets();
 
-    addWidget(text_label);
-    addWidget(trigger_label_button);
+    addWidget(status_label);
     addWidget(scan_button);
-    addWidget(test_list);
+    addWidget(wifi_list);
 
-    update();
+    updateAndDraw();
 }

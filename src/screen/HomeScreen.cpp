@@ -24,5 +24,5 @@ HomeScreen::HomeScreen() : Screen("Home") {
     addWidget(main_label);
     addWidget(wifi_button);
 
-    update();
+    updateAndDraw();
 }

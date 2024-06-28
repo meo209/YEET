@@ -14,7 +14,7 @@ std::vector<String> WifiModule::scanWifis() {
     WiFi.disconnect();
 
     const int n = WiFi.scanNetworks();
-    std::vector<String> ssids = {};
+    std::vector<String> ssids;
     for (int i = 0; i < n; i++) {
         ssids.push_back(WiFi.SSID(i));
     }
