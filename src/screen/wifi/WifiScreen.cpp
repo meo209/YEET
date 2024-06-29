@@ -15,7 +15,7 @@ extern ScreenManager screen_manager;
 
 WifiScreen::WifiScreen() : Screen("Wifi") {
 
-    Button* scan_select_button = new Button(this, 10, 50, tft.width() - 20, 37, 2, 1, "Scan/Select", [] {
+    Button* scan_select_button = new Button(this, 10, 50, tft.width() - 20, 37, 2, 1, "Scan + Save", [] {
         screen_manager.switchTo(WifiScanScreen());
     });
 

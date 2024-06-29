@@ -4,6 +4,7 @@
 
 #include <Arduino.h>
 #include <memory>
+#include <SD.h>
 #include <SPI.h>
 #include <XPT2046_Touchscreen.h>
 #include <TFT_eSPI.h>
@@ -48,6 +49,14 @@ void setup() {
     tft.init();
     tft.setRotation(0); // Ensure the rotation matches the touchscreen
     tft.fillScreen(TFT_BLACK);
+
+    /*
+    if (!SD.begin(SS, mySpi)) {
+        Serial.println("SD Card mount failed but is required.");
+        tft.drawString("SD Card mount failed but is required.", 0, 0, 1);
+        return;
+    }
+    */
 
     screen_manager.switchTo(HomeScreen());
 }

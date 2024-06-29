@@ -35,11 +35,13 @@ public:
 class Label : public Widget {
 public:
     String text;
-    int text_size, font;
+    int text_size, font, expected_width;
     bool centered;
 
     Label(Screen* parent, int x, int y, int textSize, int font, const String& text);
     Label(Screen* parent, int x, int y, int textSize, int font, bool centered, const String& text);
+    Label(Screen* parent, int x, int y, int textSize, int font, int expected_width, const String& text);
+    Label(Screen* parent, int x, int y, int textSize, int font, int expected_width, bool centered, const String& text);
 
     void draw() override;
 };

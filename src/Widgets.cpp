@@ -55,6 +55,33 @@ Label::Label(Screen *parent, const int x, const int y, const int textSize, const
     this->text_size = textSize;
     this->font = font;
     this->text = text;
+    this->expected_width = -1;
+}
+
+Label::Label(Screen *parent, const int x, const int y, const int textSize, const int font, const int expected_width,
+             const String &text) : Widget(), centered(false) {
+    this->parent = parent;
+    this->x = x;
+    this->y = y;
+    this->width = tft.textWidth(text);
+    this->height = tft.fontHeight(font);
+    this->text_size = textSize;
+    this->font = font;
+    this->text = text;
+    this->expected_width = expected_width;
+}
+
+Label::Label(Screen *parent, const int x, const int y, const int textSize, const int font, const int expected_width, const bool centered,
+             const String &text) : Widget(), centered(centered) {
+    this->parent = parent;
+    this->x = x;
+    this->y = y;
+    this->width = tft.textWidth(text, font);
+    this->height = tft.fontHeight(font);
+    this->text_size = textSize;
+    this->font = font;
+    this->text = text;
+    this->expected_width = expected_width;
 }
 
 Label::Label(Screen *parent, const int x, const int y, const int textSize, const int font, const bool centered,
@@ -67,31 +94,36 @@ Label::Label(Screen *parent, const int x, const int y, const int textSize, const
     this->text_size = textSize;
     this->font = font;
     this->text = text;
+    this->expected_width = -1;
 }
 
 void Label::draw() {
     String display_text = text;
-    int text_width = tft.textWidth(text, font);
 
-    if (text_width > width) {
-        int ellipsis_width = tft.textWidth("..", font);
-        int max_width = width - ellipsis_width;
-        int length = text.length();
+    if (expected_width != -1) {
+        int text_width = tft.textWidth(text, font);
 
-        while (text_width > max_width && length > 0) {
-            display_text = text.substring(0, --length);
-            text_width = tft.textWidth(display_text, font);
+        if (text_width > expected_width) {
+            int ellipsis_width = tft.textWidth("...", font);
+            int max_width = expected_width - ellipsis_width;
+            int length = text.length();
+
+            while (text_width > max_width && length > 0) {
+                display_text = text.substring(0, --length);
+                text_width = tft.textWidth(display_text, font);
+            }
+
+            display_text += "...";
         }
-
-        display_text += "..";
     }
+
 
     tft.fillRect(x, y, width, height, TFT_BLACK);
     tft.setTextSize(text_size);
     tft.setTextColor(TFT_WHITE, TFT_BLACK); // Set text color
 
     if (centered) {
-        int centered_x = x + (width) / 2;
+        int centered_x = x + width / 2;
         int centered_y = y + (height - tft.fontHeight(font)) / 2;
         tft.drawCentreString(display_text, centered_x, centered_y, font);
     } else {
@@ -110,18 +142,18 @@ Button::Button(Screen *parent, const int x, const int y, const int width, const 
     this->width = width;
     this->height = height;
 
-    int labelX = x + (width - tft.textWidth(text, font)) / 2;
-    int labelY = y + (height - tft.fontHeight(font)) / 2;
-
-    this->label = new Label(parent, labelX, labelY, textSize, font, true, text);
+    this->label = new Label(parent, x, y, textSize, font, true, text);
+    this->label->width = width;
+    this->label->height = height;
     children.push_back(label);
 
     this->onClick = onClick;
 }
 
 void Button::draw() {
-    tft.drawRect(x, y, width, height, TFT_DARKGREY);
     drawChildren();
+
+    tft.drawRect(x, y, width, height, TFT_DARKGREY);
 }
 
 void Button::onTouch(int touch_x, int touch_y) {
@@ -153,8 +185,7 @@ List::List(Screen *parent, const int x, const int y, const int width, const int 
 void List::update() {
     int yPosIndex = y;
     for (const String &string: content) {
-        Label *label = new Label(parent, x + 1, yPosIndex, textSize, font, string);
-        label->width = width;
+        Label *label = new Label(parent, x + 1, yPosIndex, textSize, font, width, string + "u98we3z54eu");
         children.push_back(label);
         yPosIndex += tft.fontHeight(textSize);
     }
@@ -198,7 +229,7 @@ void List::onTouchSimple(const int touch_x, const int touch_y) {
                 child->y = y_pos_index;
                 position_changed = true;
             }
-            y_pos_index += tft.fontHeight(font) / 2;
+            y_pos_index += tft.fontHeight(font);
         }
 
         if (position_changed)
